@@ -103,6 +103,9 @@ jobs:
   #         command: npm run prettify
 
   terraform-validate:
+    parameters:
+      env:
+        type: string
     executor: terraform-executor
     steps:
       - checkout
@@ -111,12 +114,14 @@ jobs:
       - run:
           name: Terraform Validate and Format
           command: |
-            echo << parameters.terraenv >>
-            cd terraform/<< parameters.terraenv >>
+            cd terraform/<< parameters.env >>
             terraform init -backend=false
             terraform validate
             terraform fmt -check
   terraform-plan-and-apply:
+    parameters:
+      env:
+        type: string
     executor: terraform-executor
     steps:
       - checkout
@@ -128,15 +133,13 @@ jobs:
       - run:
           name: Terraform Plan
           command: |
-            echo << parameters.terraenv >>
-            cd artifacts/terraform/<< parameters.terraenv >>
+            cd artifacts/terraform/<< parameters.env >>
             terraform init
             terraform plan
       - run:
           name: Terraform Apply
           command: |
-            echo << parameters.terraenv >>
-            cd artifacts/terraform/<< parameters.terraenv >>
+            cd artifacts/terraform/<< parameters.env >>
             terraform apply --auto-approve 
             terraform output bucket_id > ../../bucket.txt
             terraform output cloudfront-dist-id > ../../cloudfront-dist-id.txt
@@ -208,7 +211,7 @@ workflows:
           requires:
             - linting
             # - prettify
-          terraenv: dev
+          env: dev
           filters:
             branches:
               only:
@@ -216,7 +219,7 @@ workflows:
       - terraform-plan-and-apply:
           requires:
             - terraform-validate
-          terraenv: dev
+          env: dev
           filters:
             branches:
               only:
