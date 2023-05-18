@@ -31,14 +31,6 @@ aliases:
       paths:
         - node_modules
       key: app-{{ checksum "package.json" }}
-  # - &install-aws-cli
-  #   run:
-  #     name: Installing AWS CLI
-  #     working_directory: /
-  #     command: |
-  #       sudo apt-get -y -qq update
-  #       sudo apt-get -y install awscli
-  #       sudo apt-get install -y python-pip python-dev build-essential
   - &build-project
     run:
       name: Build Project
@@ -65,13 +57,6 @@ orbs:
   aws-cli: circleci/aws-cli@3.1
 
 jobs:
-  # aws-cli-cred-setup:
-  #   executor: aws-cli/default
-  #   steps:
-  #     - aws-cli/setup:
-  #         aws-access-key-id: AWS_ACCESS_KEY
-  #         aws-secret-access-key: AWS_ACCESS_SECRET
-  #         aws-region: AWS_REGION_NAME
   setup:
     executor: app-executor
     steps:
@@ -168,7 +153,6 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_REGION
-      # - *install-aws-cli
       - *configure-aws-access
       - *build-project
       - run:
@@ -192,7 +176,6 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_REGION
-      # - *install-aws-cli
       - *configure-aws-access
       - *build-project
       - run:
