@@ -31,14 +31,14 @@ aliases:
       paths:
         - node_modules
       key: app-{{ checksum "package.json" }}
-  - &install-aws-cli
-    run:
-      name: Installing AWS CLI
-      working_directory: /
-      command: |
-        sudo apt-get -y -qq update
-        sudo apt-get -y install awscli
-        sudo apt-get install -y python-pip python-dev build-essential
+  # - &install-aws-cli
+  #   run:
+  #     name: Installing AWS CLI
+  #     working_directory: /
+  #     command: |
+  #       sudo apt-get -y -qq update
+  #       sudo apt-get -y install awscli
+  #       sudo apt-get install -y python-pip python-dev build-essential
   - &build-project
     run:
       name: Build Project
@@ -165,9 +165,9 @@ jobs:
           at: ./
       - *show-current-branch
       - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_SECRET
-          aws-region: AWS_REGION_NAME
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_REGION
       # - *install-aws-cli
       - *configure-aws-access
       - *build-project
@@ -189,9 +189,9 @@ jobs:
           at: ./
       - *show-current-branch
       - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_SECRET
-          aws-region: AWS_REGION_NAME
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_REGION
       # - *install-aws-cli
       - *configure-aws-access
       - *build-project
