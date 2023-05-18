@@ -1,0 +1,154 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1
+  aws-cli: circleci/aws-cli@3.1
+  terraform: circleci/terraform@3.2.1
+jobs:
+  # aws-cli-cred-setup:
+  #   executor: aws-cli/default
+  #   steps:
+  #     - aws-cli/setup:
+  #         aws-access-key-id: AWS_ACCESS_KEY
+  #         aws-secret-access-key: AWS_ACCESS_SECRET
+  #         aws-region: AWS_REGION_NAME
+  build-webapp:
+    executor: node/default # use the default executor defined within the orb
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          command: yarn build
+          name: Build project
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  infra-deploy:
+    executor: terraform/default
+    steps:
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-region: AWS_REGION_NAME
+      - run:
+          name: Create .terraformrc file locally
+          command: >-
+            echo "credentials \"app.terraform.io\" {token =
+            \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
+      - terraform/install:
+          arch: amd64
+          os: linux
+          terraform_version: 0.14.2
+      - terraform/fmt:
+          path: ./terraform/<< parameters.env >>
+      - terraform/validate:
+          path: ./terraform/<< parameters.env >>
+      # - terraform/init:
+      #     backend: true
+      #     path: .
+      # - terraform/plan:
+      #     path: .
+      # - terraform/apply:
+      #     path: .
+      # - terraform/destroy:
+      #     path: .
+    working_directory: ~/
+  # deploy-dev:
+  #   executor: serverless-framework/default
+  #   steps:
+  #     - attach_workspace:
+  #         at: .
+  #     - aws-cli/setup
+  #     - serverless-framework/setup
+  #     - run:
+  #         command: serverless deploy --verbose
+  #         name: deploy
+  # destroy-dev:
+  #   executor: serverless-framework/default
+  #   steps:
+  #     - attach_workspace:
+  #         at: .
+  #     - aws-cli/setup
+  #     - serverless-framework/setup
+  #     - run:
+  #         command: serverless remove
+  #         name: destroy lambda
+
+  #########################################
+  # TERRAFORM
+  #########################################
+  # 1. Run 'terraform fmt -check'
+  # 2. Run 'terraform init'
+  # 3. Run 'terraform plan'
+  # 4. Run 'terraform plan -var variable=${{secrets.variable}} -no-color'
+  # 5. Show plan output in UI
+  # 6. If plan fails, fail the workflow 'exit 1'
+  # 7. Optional, run tests with terragrunt
+  # 8. If manual trigger, set env to production
+  # 9. If main branch, set env to dev
+  # 10. Apply dev IF above environment is dev or branch ref is main
+  #   cd terraform/dev
+  #   'terraform apply -var variable=${{secrets.variable}} -auto-approve'
+  # 11. Apply prod IF above environment is production or was manual production trigger
+  #   cd terraform/production
+  #   'terraform apply -var variable=${{secrets.variable}} -auto-approve'
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  btd: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
+    jobs:
+      - aws-cli-cred-setup:
+          context: aws
+      - build-webapp:
+          context: Platform
+
+  ci-dev:
+    jobs:
+      - setup
+      - infra-deploy:
+          env: dev
+          context: terraform
+          filters:
+            branches:
+              only:
+                - Platform
+  ci-prod:
+    jobs:
+      - infra-deploy:
+          env: prod
+          context: Platform
+          filters:
+            tags:
+              only:
+                - /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
+            branches:
+              ignore: /.*/
+
+      # - deploy-dev:
+      #     context: Platform
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - hold-destroy-dev:
+      #     type: approval
+      #     requires:
+      #       - deploy-dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - destroy-dev:
+      #     context: Platform
+      #     requires:
+      #       - hold-destroy-dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
