@@ -111,7 +111,7 @@ jobs:
       - run:
           name: Terraform Validate and Format
           command: |
-            cd terraform/<< parameters.env >>
+            cd terraform/<< parameters.terraenv >>
             terraform init -backend=false
             terraform validate
             terraform fmt -check
@@ -127,13 +127,13 @@ jobs:
       - run:
           name: Terraform Plan
           command: |
-            cd artifacts/terraform/<< parameters.env >>
+            cd artifacts/terraform/<< parameters.terraenv >>
             terraform init
             terraform plan
       - run:
           name: Terraform Apply
           command: |
-            cd artifacts/terraform/<< parameters.env >>
+            cd artifacts/terraform/<< parameters.terraenv >>
             terraform apply --auto-approve 
             terraform output bucket_id > ../../bucket.txt
             terraform output cloudfront-dist-id > ../../cloudfront-dist-id.txt
@@ -205,7 +205,7 @@ workflows:
           requires:
             - linting
             # - prettify
-          env: dev
+          terraenv: dev
           filters:
             branches:
               only:
@@ -213,7 +213,7 @@ workflows:
       - terraform-plan-and-apply:
           requires:
             - terraform-validate
-          env: dev
+          terraenv: dev
           filters:
             branches:
               only:
