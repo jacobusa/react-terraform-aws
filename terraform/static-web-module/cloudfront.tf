@@ -1,14 +1,14 @@
 
 resource "aws_cloudfront_origin_access_identity" "oai" {
-  comment = "OAI for ${var.endpoint}"
+  comment = "OAI for Cloudfront"
 }
 
 resource "aws_cloudfront_distribution" "cf_distribution" {
   enabled             = true
   default_root_object = "index.html"
   tags                = local.cf_distribution_tags
-  aliases             = [var.endpoint]
-  price_class         = var.price_class
+  # aliases             = [var.endpoint]
+  price_class = var.price_class
   # retain_on_delete = true
 
   origin {
@@ -78,25 +78,11 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.cert.arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2018"
-    # uncomment the following if using ugly cloudfront url instead of route53
-    # cloudfront_default_certificate = true
+    # acm_certificate_arn      = aws_acm_certificate.cert.arn
+    # ssl_support_method       = "sni-only"
+    # minimum_protocol_version = "TLSv1.2_2018"
+
+    # uncomment the following if using ugly cloudfront url instead of route53 domain
+    cloudfront_default_certificate = true
   }
-}
-
-resource "aws_acm_certificate" "cert" {
-  provider                  = aws.us-east-1
-  domain_name               = var.domain_name
-  subject_alternative_names = ["*.${var.domain_name}"]
-  tags                      = local.cert_tags
-  validation_method         = "DNS"
-}
-
-
-resource "aws_acm_certificate_validation" "certvalidation" {
-  provider                = aws.us-east-1
-  certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = [for r in aws_route53_record.cert_validation : r.fqdn]
 }
