@@ -111,6 +111,7 @@ jobs:
       - run:
           name: Terraform Validate and Format
           command: |
+            echo << parameters.terraenv >>
             cd terraform/<< parameters.terraenv >>
             terraform init -backend=false
             terraform validate
@@ -127,12 +128,14 @@ jobs:
       - run:
           name: Terraform Plan
           command: |
+            echo << parameters.terraenv >>
             cd artifacts/terraform/<< parameters.terraenv >>
             terraform init
             terraform plan
       - run:
           name: Terraform Apply
           command: |
+            echo << parameters.terraenv >>
             cd artifacts/terraform/<< parameters.terraenv >>
             terraform apply --auto-approve 
             terraform output bucket_id > ../../bucket.txt
