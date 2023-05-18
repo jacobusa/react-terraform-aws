@@ -61,8 +61,17 @@ aliases:
       command: |
         echo "credentials \"app.terraform.io\" {token =
         \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
+orbs:
+  aws-cli: circleci/aws-cli@3.1
 
 jobs:
+  # aws-cli-cred-setup:
+  #   executor: aws-cli/default
+  #   steps:
+  #     - aws-cli/setup:
+  #         aws-access-key-id: AWS_ACCESS_KEY
+  #         aws-secret-access-key: AWS_ACCESS_SECRET
+  #         aws-region: AWS_REGION_NAME
   setup:
     executor: app-executor
     steps:
@@ -155,7 +164,11 @@ jobs:
       - attach_workspace:
           at: ./
       - *show-current-branch
-      - *install-aws-cli
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-region: AWS_REGION_NAME
+      # - *install-aws-cli
       - *configure-aws-access
       - *build-project
       - run:
@@ -175,7 +188,11 @@ jobs:
       - attach_workspace:
           at: ./
       - *show-current-branch
-      - *install-aws-cli
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-region: AWS_REGION_NAME
+      # - *install-aws-cli
       - *configure-aws-access
       - *build-project
       - run:
