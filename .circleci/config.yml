@@ -202,6 +202,7 @@ workflows:
             - linting
       - terraform-validate:
           context: Web
+          name: terraform-validate-dev
           requires:
             - build
           env: dev
@@ -211,8 +212,9 @@ workflows:
                 - main
       - terraform-plan-and-apply:
           context: Web
+          name: terraform-plan-and-apply-dev
           requires:
-            - terraform-validate
+            - terraform-validate-dev
           env: dev
           filters:
             branches:
@@ -221,7 +223,7 @@ workflows:
       - deploy-to-aws-s3-dev:
           context: Web
           requires:
-            - terraform-plan-and-apply
+            - terraform-plan-and-apply-dev
           filters:
             branches:
               only:
@@ -236,12 +238,15 @@ workflows:
                 - main
       - hold:
           type: approval
+          name: approval
           requires:
             - deploy-to-aws-cloudfront-dev
       - terraform-validate:
           context: Web
+          name: terraform-validate-prod
           requires:
             - build
+            - approval
           env: prod
           filters:
             branches:
@@ -249,8 +254,9 @@ workflows:
                 - main
       - terraform-plan-and-apply:
           context: Web
+          name: terraform-plan-and-apply-prod
           requires:
-            - terraform-validate
+            - terraform-validate-prod
           env: prod
           filters:
             branches:
@@ -259,7 +265,7 @@ workflows:
       - deploy-to-aws-s3-prod:
           context: Web
           requires:
-            - terraform-plan-and-apply
+            - terraform-plan-and-apply-prod
           filters:
             branches:
               only:
