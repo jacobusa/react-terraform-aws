@@ -116,7 +116,7 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - << parameters.env >>artifacts
+            - << parameters.env >>/artifacts
   deploy-to-aws-s3-dev:
     executor: app-executor
     steps:
