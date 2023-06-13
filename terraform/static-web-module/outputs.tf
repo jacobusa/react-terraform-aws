@@ -1,6 +1,6 @@
 output "bucket_id" {
-  description = "Bucket ID for s3 holding out website files"
-  value = aws_s3_bucket.web_bucket.id
+  description = "Bucket ID for s3 holding our website files"
+  value       = aws_s3_bucket.web_bucket.id
 }
 output "cloudfront_domain_name" {
   description = "Cloudfront domain name"

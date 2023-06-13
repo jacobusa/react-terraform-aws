@@ -8,6 +8,7 @@ locals {
     created_by = "terraform"
   }
   cert_tags = {
+    Name       = coalesce(var.domain_name, "acm_certificate")
     created_by = "terraform"
   }
 }

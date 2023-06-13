@@ -3,5 +3,5 @@ module "dev" {
   domain_name        = "justneedadomain.xyz"
   use_default_domain = true
   region             = var.region
-  bucket_name        = "sample-vite-terraform-aws"
+  bucket_name        = "sample-vite-terraform-aws-prod"
 }

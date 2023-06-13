@@ -3,7 +3,7 @@ terraform {
     hostname     = "app.terraform.io"
     organization = "jacobus-test"
     workspaces {
-      name = "dev"
+      name = "prod"
     }
   }
 
