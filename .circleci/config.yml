@@ -255,8 +255,8 @@ workflows:
           context: Web
           name: terraform-validate-prod
           requires:
-            - build
-            - approval
+            - deploy-to-aws-cloudfront-dev
+            - 
           env: prod
           filters:
             branches:
