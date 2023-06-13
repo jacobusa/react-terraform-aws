@@ -228,7 +228,6 @@ workflows:
                 - main
       - deploy-to-aws-cloudfront-dev:
           context: Web
-          env: dev
           requires:
             - deploy-to-aws-s3-dev
           filters:
