@@ -8,7 +8,7 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
   tags                = local.cf_distribution_tags
   price_class         = var.price_class
   # If using route53 aliases for DNS we need to declare it here too, otherwise we'll get 403s.
-  aliases = local.local_aliases
+  aliases = local.cf_aliases
 
   origin {
     domain_name = aws_s3_bucket.web_bucket.bucket_regional_domain_name
@@ -87,27 +87,12 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
     }
   }
 
-  dynamic "viewer_certificate" {
-    for_each = local.default_certs
-    content {
-      cloudfront_default_certificate = true
-    }
-  }
+  viewer_certificate {
+    acm_certificate_arn = var.use_default_domain ? null : data.aws_acm_certificate.acm_cert[0].arn
+    # acm_certificate_arn      =  data.aws_acm_certificate.acm_cert.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2018"
 
-  dynamic "viewer_certificate" {
-    for_each = local.acm_certs
-    content {
-      acm_certificate_arn      = data.aws_acm_certificate.acm_cert[0].arn
-      ssl_support_method       = "sni-only"
-      minimum_protocol_version = "TLSv1"
-    }
+    cloudfront_default_certificate = var.use_default_domain
   }
-  # viewer_certificate {
-  #   # acm_certificate_arn      = aws_acm_certificate.cert.arn
-  #   # ssl_support_method       = "sni-only"
-  #   # minimum_protocol_version = "TLSv1.2_2018"
-
-  #   # uncomment the following if using ugly cloudfront url instead of route53 domain
-  #   cloudfront_default_certificate = true
-  # }
 }

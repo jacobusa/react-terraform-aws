@@ -15,6 +15,10 @@ variable "domain_name" {
   description = "Domain name to set for applications"
   type        = string
 }
+variable "cert_domain_name" {
+  description = "Domain name to set for applications"
+  type        = string
+}
 
 variable "region" {
   description = "AWS Region"
@@ -28,5 +32,11 @@ variable "price_class" {
 
 variable "cloudfront_aliases" {
   default     = []
-  description = "Extra CNAMEs (alternate domain names), if any, for this distribution."
+  description = "Extra CNAMEs (alternate domain names), if any, for this distribution. Eg. ['dev'] for dev.domain.com"
+}
+
+variable "certificate_arn" {
+  default     = ""
+  type        = string
+  description = "aws arn for the certificate issed and validated for the given aliases"
 }
