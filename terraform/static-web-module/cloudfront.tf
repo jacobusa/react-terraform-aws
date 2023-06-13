@@ -1,3 +1,6 @@
+locals {
+  local_aliases = var.cloudfront_aliases == [] ? [] : formatlist("%s.${var.domain_name}", var.cloudfront_aliases)
+}
 
 resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI for Cloudfront"
@@ -9,7 +12,7 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
   tags                = local.cf_distribution_tags
   price_class         = var.price_class
   # If using route53 aliases for DNS we need to declare it here too, otherwise we'll get 403s.
-  aliases = ["${var.domain_name}"]
+  aliases = local.local_aliases
 
   origin {
     domain_name = aws_s3_bucket.web_bucket.bucket_regional_domain_name

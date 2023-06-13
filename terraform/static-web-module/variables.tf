@@ -25,3 +25,8 @@ variable "price_class" {
   default     = "PriceClass_100"
   type        = string
 }
+
+variable "cloudfront_aliases" {
+  default     = []
+  description = "Extra CNAMEs (alternate domain names), if any, for this distribution."
+}
