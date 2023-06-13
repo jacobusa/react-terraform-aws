@@ -11,7 +11,6 @@ locals {
 }
 
 resource "aws_route53_record" "cert_validation" {
-  count = var.use_default_domain ? 0 : 1
   for_each = {
     for d in aws_acm_certificate.cert.domain_validation_options : d.domain_name => {
       name   = d.resource_record_name

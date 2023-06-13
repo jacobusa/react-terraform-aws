@@ -1,4 +1,4 @@
-module "dev" {
+module "prod" {
   source             = "../static-web-module"
   domain_name        = "justneedadomain.xyz"
   use_default_domain = true
