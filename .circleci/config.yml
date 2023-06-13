@@ -280,7 +280,7 @@ workflows:
           context: Web
           name: terraform-plan-and-apply-prod
           requires:
-            - terraform-validate-prod
+            - prod-approval
           env: prod
           filters:
             branches:
