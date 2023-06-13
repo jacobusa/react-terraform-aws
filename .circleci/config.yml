@@ -61,8 +61,7 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - dev/artifacts
-            - prod/artifacts
+            - artifacts
   linting:
     executor: app-executor
     steps:
@@ -98,7 +97,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./<< parameters.env >>
+          at: ./
       - *configure-terraform-cloud
       - run:
           name: Terraform Plan
@@ -111,8 +110,8 @@ jobs:
           command: |
             cd artifacts/terraform/<< parameters.env >>
             terraform apply --auto-approve 
-            terraform output bucket_id > ../../bucket_id.txt
-            terraform output cloudfront_dist_id > ../../cloudfront_dist_id.txt
+            terraform output bucket_id > ../../<< parameters.env >>_bucket_id.txt
+            terraform output cloudfront_dist_id > ../../<< parameters.env >>_cloudfront_dist_id.txt
       - persist_to_workspace:
           root: ./
           paths:
@@ -128,7 +127,7 @@ jobs:
       - run:
           name: Deploy to AWS S3
           command: |
-            AWS_BUCKET_NAME=$(cat artifacts/bucket_id.txt | sed 's/\"//g')
+            AWS_BUCKET_NAME=$(cat artifacts/dev_bucket_id.txt | sed 's/\"//g')
             echo $AWS_BUCKET_NAME
             if [ "${CIRCLE_BRANCH}" == "main" ]
             then 
@@ -145,7 +144,7 @@ jobs:
       - run:
           name: Deploy to AWS CloudFront
           command: |
-            AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/cloudfront_dist_id.txt | sed 's/\"//g')
+            AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/dev_cloudfront_dist_id.txt | sed 's/\"//g')
             echo $AWS_CLOUDFRONT_DISTRIBUTION_ID
             aws configure set preview.cloudfront true
             if [ "${CIRCLE_BRANCH}" == "main" ]
@@ -163,7 +162,7 @@ jobs:
       - run:
           name: Deploy to AWS S3
           command: |
-            AWS_BUCKET_NAME=$(cat artifacts/bucket_id.txt | sed 's/\"//g')
+            AWS_BUCKET_NAME=$(cat artifacts/prod_bucket_id.txt | sed 's/\"//g')
             echo $AWS_BUCKET_NAME
             if [ "${CIRCLE_BRANCH}" == "main" ]
             then 
@@ -180,7 +179,7 @@ jobs:
       - run:
           name: Deploy to AWS CloudFront
           command: |
-            AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/cloudfront_dist_id.txt | sed 's/\"//g')
+            AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/prod_cloudfront_dist_id.txt | sed 's/\"//g')
             echo $AWS_CLOUDFRONT_DISTRIBUTION_ID
             aws configure set preview.cloudfront true
             if [ "${CIRCLE_BRANCH}" == "main" ]
