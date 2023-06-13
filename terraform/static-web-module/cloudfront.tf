@@ -1,7 +1,3 @@
-locals {
-  local_aliases = var.cloudfront_aliases == [] ? [] : formatlist("%s.${var.domain_name}", var.cloudfront_aliases)
-}
-
 resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI for Cloudfront"
 }
@@ -91,12 +87,27 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
     }
   }
 
-  viewer_certificate {
-    # acm_certificate_arn      = aws_acm_certificate.cert.arn
-    # ssl_support_method       = "sni-only"
-    # minimum_protocol_version = "TLSv1.2_2018"
-
-    # uncomment the following if using ugly cloudfront url instead of route53 domain
-    cloudfront_default_certificate = true
+  dynamic "viewer_certificate" {
+    for_each = local.default_certs
+    content {
+      cloudfront_default_certificate = true
+    }
   }
+
+  dynamic "viewer_certificate" {
+    for_each = local.acm_certs
+    content {
+      acm_certificate_arn      = data.aws_acm_certificate.acm_cert[0].arn
+      ssl_support_method       = "sni-only"
+      minimum_protocol_version = "TLSv1"
+    }
+  }
+  # viewer_certificate {
+  #   # acm_certificate_arn      = aws_acm_certificate.cert.arn
+  #   # ssl_support_method       = "sni-only"
+  #   # minimum_protocol_version = "TLSv1.2_2018"
+
+  #   # uncomment the following if using ugly cloudfront url instead of route53 domain
+  #   cloudfront_default_certificate = true
+  # }
 }
