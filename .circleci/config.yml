@@ -127,6 +127,9 @@ jobs:
       - run:
           name: Deploy to AWS S3
           command: |
+            ls
+            cd artifacts
+            ls -al
             AWS_BUCKET_NAME=$(cat artifacts/dev_bucket_id.txt | sed 's/\"//g')
             echo $AWS_BUCKET_NAME
             if [ "${CIRCLE_BRANCH}" == "main" ]
