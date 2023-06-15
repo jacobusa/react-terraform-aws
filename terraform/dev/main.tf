@@ -6,4 +6,3 @@ module "dev" {
   region           = var.region
   bucket_name      = "sample-vite-terraform-aws"
 }
-# 
