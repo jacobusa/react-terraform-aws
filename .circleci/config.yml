@@ -105,6 +105,22 @@ jobs:
             cd artifacts/terraform/<< parameters.env >>
             terraform init
             terraform plan
+  terraform-destroy:
+    parameters:
+      env:
+        type: string
+    executor: terraform-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - *configure-terraform-cloud
+      - run:
+          name: Terraform Destroy
+          command: |
+            cd artifacts/terraform/<< parameters.env >>
+            terraform init
+            terraform destroy --auto-approve
   terraform-plan-and-apply:
     parameters:
       env:
@@ -251,6 +267,16 @@ workflows:
             branches:
               only:
                 - main
+      - terraform-destroy:
+          context: Web
+          name: terraform-destroy-dev
+          requires:
+            - deploy-to-aws-cloudfront-dev
+          env: dev
+          filters:
+            branches:
+              only:
+                - main
       - terraform-validate:
           context: Web
           name: terraform-validate-prod
@@ -298,6 +324,16 @@ workflows:
           context: Web
           requires:
             - deploy-to-aws-s3-prod
+          filters:
+            branches:
+              only:
+                - main
+      - terraform-destroy:
+          context: Web
+          name: terraform-destroy-prod
+          requires:
+            - deploy-to-aws-cloudfront-prod
+          env: prod
           filters:
             branches:
               only:
