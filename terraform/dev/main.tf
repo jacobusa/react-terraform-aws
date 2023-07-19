@@ -1,8 +1,8 @@
 module "dev" {
   source           = "../static-web-module"
-  cert_domain_name = "*.moduledev.xyz"
+  cert_domain_name = "dev.moduledev.xyz"
   cloudfront_alias = "dev.moduledev.xyz"
-  certificate_arn  = "arn:aws:acm:us-east-1:176709227108:certificate/fd1d7a96-72e7-42de-9f2d-7616eaaa9268"
+  certificate_arn  = "arn:aws:acm:us-east-1:176709227108:certificate/9f3e89d8-f249-4899-a57b-ad4d27e303da"
   region           = var.region
   bucket_name      = "sample-vite-terraform-aws"
 }
