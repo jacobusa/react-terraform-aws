@@ -6,11 +6,6 @@ variable "use_default_domain" {
   default     = false
   description = "Use CloudFront website address without Route53 and ACM certificate"
 }
-variable "cert_domain_name" {
-  description = "Domain name to set for applications"
-  type        = string
-}
-
 variable "region" {
   description = "AWS Region"
   type        = string

@@ -8,7 +8,7 @@ locals {
     created_by = "terraform"
   }
   cert_tags = {
-    Name       = coalesce(var.cert_domain_name, "acm_certificate")
+    Name       = coalesce(var.cloudfront_alias, "acm_certificate")
     created_by = "terraform"
   }
   cf_aliases = var.use_default_domain ? [] : [var.cloudfront_alias]

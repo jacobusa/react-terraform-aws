@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "web_s3_policy" {
 }
 data "aws_acm_certificate" "acm_cert" {
   count    = var.use_default_domain ? 0 : 1
-  domain   = var.cert_domain_name
+  domain   = var.cloudfront_alias
   provider = aws.us-east-1
   //CloudFront uses certificates from US-EAST-1 region only
   statuses = [
