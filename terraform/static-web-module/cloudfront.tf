@@ -25,6 +25,10 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = aws_s3_bucket.web_bucket.bucket_regional_domain_name
     viewer_protocol_policy = "redirect-to-https"
+    function_association {
+      event_type = "viewer-response"
+      function_arn = aws_cloudfront_function.apple_app_site_association_heaader_function.arn
+    }
 
     # These TTL's are typical for SPA's. Adjust to meet caching needs accordingly
     # See below link to learn more about cloudfront caching behavior
@@ -95,4 +99,12 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
 
     cloudfront_default_certificate = var.use_default_domain
   }
+}
+
+resource "aws_cloudfront_function" "apple_app_site_association_heaader_function" {
+  name = "apple_app_site_association_heaader_function"
+  comment = "Add the content type of application/json to apple site file in response headers function"
+  runtime = "cloudfront-js-1.0"
+  code = file("${path.module}/AppleSiteAssociationHeaderFunction.js")
+  
 }
