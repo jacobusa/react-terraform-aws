@@ -26,7 +26,7 @@ resource "aws_cloudfront_distribution" "cf_distribution" {
     target_origin_id       = aws_s3_bucket.web_bucket.bucket_regional_domain_name
     viewer_protocol_policy = "redirect-to-https"
     function_association {
-      event_type = "viewer-response"
+      event_type = "viewer-request"
       function_arn = aws_cloudfront_function.apple_app_site_association_heaader_function.arn
     }
 
