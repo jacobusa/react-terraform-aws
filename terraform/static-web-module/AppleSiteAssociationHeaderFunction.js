@@ -3,14 +3,7 @@ function handler(event) {
   var response = event.response;
   var uri = event.request.uri;
   if (uri === '/apple-app-site-association') {
-    var newResponse = {
-      statusCode: 200,
-      statusDescription: 'OK',
-      headers: {
-        'content-type': { value: 'application/json' },
-      },
-    };
-    return newResponse;
+    response.headers['content-type'] = { value: 'application/json' };
   }
   return response;
 }
