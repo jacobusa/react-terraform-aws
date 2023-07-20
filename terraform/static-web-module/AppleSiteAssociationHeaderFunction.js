@@ -1,16 +1,16 @@
 'use strict';
 function handler(event) {
-  var request = event.request;
-  var uri = request.uri;
+  var response = event.response;
+  var uri = response.uri;
   if (uri === '/apple-app-site-association') {
-    var response = {
+    var newResponse = {
       statusCode: 200,
       statusDescription: 'OK',
       headers: {
         'content-type': { value: 'application/json' },
       },
     };
-    return response;
+    return newResponse;
   }
-  return request;
+  return response;
 }
