@@ -29,6 +29,9 @@ aliases:
       name: Build Project
       command: |
         yarn install
+        ls -la
+        pwd
+        cat artifacts/hey.txt
         yarn build:dev
         echo "Build Successful!"
   - &build-project-prod
@@ -58,6 +61,7 @@ jobs:
           name: Copy Terraform folder
           command: |
             cp -r terraform artifacts/terraform/
+            echo hey >> artifacts/hey.txt
       - persist_to_workspace:
           root: ./
           paths:
@@ -74,6 +78,8 @@ jobs:
     executor: app-executor
     steps:
       - checkout
+      - attach_workspace:
+          at: ./
       - *build-project-dev
   terraform-validate:
     parameters:
@@ -231,42 +237,42 @@ workflows:
           context: Web
           requires:
             - linting
-      - terraform-validate:
-          context: Web
-          name: terraform-validate-dev
-          requires:
-            - build
-          env: dev
-          filters:
-            branches:
-              only:
-                - main
-      - terraform-plan-and-apply:
-          context: Web
-          name: terraform-plan-and-apply-dev
-          requires:
-            - terraform-validate-dev
-          env: dev
-          filters:
-            branches:
-              only:
-                - main
-      - deploy-to-aws-s3-dev:
-          context: Web
-          requires:
-            - terraform-plan-and-apply-dev
-          filters:
-            branches:
-              only:
-                - main
-      - deploy-to-aws-cloudfront-dev:
-          context: Web
-          requires:
-            - deploy-to-aws-s3-dev
-          filters:
-            branches:
-              only:
-                - main
+      # - terraform-validate:
+      #     context: Web
+      #     name: terraform-validate-dev
+      #     requires:
+      #       - build
+      #     env: dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - terraform-plan-and-apply:
+      #     context: Web
+      #     name: terraform-plan-and-apply-dev
+      #     requires:
+      #       - terraform-validate-dev
+      #     env: dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - deploy-to-aws-s3-dev:
+      #     context: Web
+      #     requires:
+      #       - terraform-plan-and-apply-dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - deploy-to-aws-cloudfront-dev:
+      #     context: Web
+      #     requires:
+      #       - deploy-to-aws-s3-dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
       # - terraform-destroy:
       #     context: Web
       #     name: terraform-destroy-dev
@@ -277,57 +283,57 @@ workflows:
       #       branches:
       #         only:
       #           - main
-      - terraform-validate:
-          context: Web
-          name: terraform-validate-prod
-          requires:
-            - deploy-to-aws-cloudfront-dev
-          env: prod
-          filters:
-            branches:
-              only:
-                - main
-      - terraform-plan:
-          context: Web
-          name: terraform-plan-prod
-          requires:
-            - terraform-validate-prod
-          env: prod
-          filters:
-            branches:
-              only:
-                - main
-      - hold:
-          type: approval
-          name: prod-approval
-          requires:
-            - terraform-plan-prod
-      - terraform-plan-and-apply:
-          context: Web
-          name: terraform-plan-and-apply-prod
-          requires:
-            - prod-approval
-          env: prod
-          filters:
-            branches:
-              only:
-                - main
-      - deploy-to-aws-s3-prod:
-          context: Web
-          requires:
-            - terraform-plan-and-apply-prod
-          filters:
-            branches:
-              only:
-                - main
-      - deploy-to-aws-cloudfront-prod:
-          context: Web
-          requires:
-            - deploy-to-aws-s3-prod
-          filters:
-            branches:
-              only:
-                - main
+      # - terraform-validate:
+      #     context: Web
+      #     name: terraform-validate-prod
+      #     requires:
+      #       - deploy-to-aws-cloudfront-dev
+      #     env: prod
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - terraform-plan:
+      #     context: Web
+      #     name: terraform-plan-prod
+      #     requires:
+      #       - terraform-validate-prod
+      #     env: prod
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - hold:
+      #     type: approval
+      #     name: prod-approval
+      #     requires:
+      #       - terraform-plan-prod
+      # - terraform-plan-and-apply:
+      #     context: Web
+      #     name: terraform-plan-and-apply-prod
+      #     requires:
+      #       - prod-approval
+      #     env: prod
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - deploy-to-aws-s3-prod:
+      #     context: Web
+      #     requires:
+      #       - terraform-plan-and-apply-prod
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      # - deploy-to-aws-cloudfront-prod:
+      #     context: Web
+      #     requires:
+      #       - deploy-to-aws-s3-prod
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
       # - terraform-destroy:
       #     context: Web
       #     name: terraform-destroy-prod

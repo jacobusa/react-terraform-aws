@@ -106,5 +106,4 @@ resource "aws_cloudfront_function" "apple_app_site_association_heaader_function"
   comment = "Add the content type of application/json to apple site file in response headers function"
   runtime = "cloudfront-js-1.0"
   code = file("${path.module}/AppleSiteAssociationHeaderFunction.js")
-  
 }
