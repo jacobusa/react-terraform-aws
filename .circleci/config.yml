@@ -29,9 +29,8 @@ aliases:
       name: Build Project
       command: |
         yarn install
-        ls -la
-        pwd
         cat artifacts/hey.txt
+        echo $HEY
         yarn build:dev
         echo "Build Successful!"
   - &build-project-prod
@@ -80,6 +79,10 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./
+      - run:
+          name: Initiallze env var
+          command: |
+            export HEY=hye
       - *build-project-dev
   terraform-validate:
     parameters:
