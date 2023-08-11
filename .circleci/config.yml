@@ -29,7 +29,8 @@ aliases:
       name: Build Project
       command: |
         yarn install
-        cat artifacts/hey.txt
+        export HEY=$(cat artifacts/hey.txt)
+        printenv
         echo $HEY
         yarn build:dev
         echo "Build Successful!"
