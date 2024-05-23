@@ -96,14 +96,14 @@ jobs:
           command: |
             export HEY=hye
             CURRENT_VERSION=$(jq -r '.version' package.json)
-            IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
-            PATCH_VERSION=${VERSION_PARTS[2]}
-            echo "$PATCH_VERSION"
-            NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
-            echo "$NEW_PATCH_VERSION"
-            NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$NEW_PATCH_VERSION"
-            jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
       - *build-project-dev
+        # IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
+        # PATCH_VERSION=${VERSION_PARTS[2]}
+        # echo "$PATCH_VERSION"
+        # NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
+        # echo "$NEW_PATCH_VERSION"
+        # NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$NEW_PATCH_VERSION"
+        # jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
   terraform-validate:
     parameters:
       env:
