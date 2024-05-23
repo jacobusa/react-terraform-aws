@@ -86,9 +86,9 @@ jobs:
             git config --global user.email "ci@ribbiot.com"
             git config --global user.name "CircleCI"
             npm version --patch
-            git push origin main
             export CURRENT_VERSION=$(jq -r '.version' package.json)
             echo $CURRENT_VERSION
+      # git push origin main
       # CURRENT_VERSION=$(jq -r '.version' package.json)
       # IFS='.' read -r -a VERSION_PARTS \<<< "0.0.1"
       # CURRENT_VERSION=$(jq -r '.version' package.json)
