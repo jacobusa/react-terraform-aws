@@ -93,7 +93,8 @@ jobs:
             echo "$NEW_PATCH_VERSION"
             NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$NEW_PATCH_VERSION"
             echo "$NEW_VERSION"
-        # jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
+            jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
+            git status
       # - *build-project-dev
   build:
     executor: app-executor
