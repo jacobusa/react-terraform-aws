@@ -258,6 +258,7 @@ workflows:
   bump-version-on-main:
     jobs:
       - bump-version:
+          context: Web
           filters:
             branches:
               only: main
