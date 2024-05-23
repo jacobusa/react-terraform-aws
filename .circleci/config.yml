@@ -85,7 +85,7 @@ jobs:
           command: |
             echo "bumping version"
             CURRENT_VERSION=$(jq -r '.version' package.json)
-            wcho "$CURRENT_VERSION"
+            echo "$CURRENT_VERSION"
         # CURRENT_VERSION=$(jq -r '.version' package.json)
         # IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
         # PATCH_VERSION=${VERSION_PARTS[2]}
