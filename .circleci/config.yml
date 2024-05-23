@@ -270,8 +270,8 @@ workflows:
       #       - setup
       - bump-version:
           context: Web
-          requires:
-            - linting
+          # requires:
+          #   - linting
       # - build:
       #     context: Web
       #     requires:
