@@ -83,18 +83,20 @@ jobs:
       - run:
           name: Bump Version and commit
           command: |
-            echo "bumping version"
-            CURRENT_VERSION=$(jq -r '.version' package.json)
-            IFS='.' read -r -a VERSION_PARTS \<<< "0.0.1"
-            CURRENT_VERSION=$(jq -r '.version' package.json)
-            PATCH_VERSION=${VERSION_PARTS[2]}
-            echo "$PATCH_VERSION"
-            NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
-            echo "$NEW_PATCH_VERSION"
-            NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$NEW_PATCH_VERSION"
-            echo "$NEW_VERSION"
-            jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
-            git status
+            npm version --patch
+      # CURRENT_VERSION=$(jq -r '.version' package.json)
+      # IFS='.' read -r -a VERSION_PARTS \<<< "0.0.1"
+      # CURRENT_VERSION=$(jq -r '.version' package.json)
+      # PATCH_VERSION=${VERSION_PARTS[2]}
+      # NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
+      # NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$NEW_PATCH_VERSION"
+      # jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
+      # git status
+      # git config --global user.email "ci@ribbiot.com"
+      # git config --global user.name "CircleCI"
+      # git commit -am "[skip ci] Bump version to $NEW_VERSION"
+      # git tag "$NEW_VERSION"
+      # git push origin main --tags
       # - *build-project-dev
   build:
     executor: app-executor
@@ -247,6 +249,12 @@ jobs:
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
             fi
 workflows:
+  # bump-version-on-main:
+  #   jobs:
+  #     - bump-version:
+  #         filters:
+  #           branches:
+  #             only: main
   build_and_deploy:
     jobs:
       # - setup:
@@ -257,8 +265,8 @@ workflows:
       #       - setup
       - bump-version:
           context: Web
-          # requires:
-          #   - linting
+          requires:
+            - linting
       # - build:
       #     context: Web
       #     requires:
