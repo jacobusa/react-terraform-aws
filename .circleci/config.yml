@@ -255,24 +255,31 @@ jobs:
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
             fi
 workflows:
-  # bump-version-on-main:
-  #   jobs:
-  #     - bump-version:
-  #         filters:
-  #           branches:
-  #             only: main
+  bump-version-on-main:
+    jobs:
+      - bump-version:
+          filters:
+            branches:
+              only: main
+            tags:
+              ignore: /^v.*/
   build_and_deploy:
     jobs:
-      # - setup:
-      #     context: Web
-      # - linting:
-      #     context: Web
-      #     requires:
-      #       - setup
-      - bump-version:
+      - setup:
           context: Web
-          # requires:
-          #   - linting
+          filters:
+            branches:
+              only: main
+            tags:
+              only: /^v.*/
+      - linting:
+          context: Web
+          requires:
+            - setup
+      # - bump-version:
+      #     context: Web
+      # requires:
+      #   - linting
       # - build:
       #     context: Web
       #     requires:
