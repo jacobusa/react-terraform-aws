@@ -268,11 +268,10 @@ workflows:
     jobs:
       - setup:
           context: Web
-          filters:
-            branches:
-              only: main
-            tags:
-              only: /^v.*/
+          when:
+            and:
+              - equal: [main, << pipeline.git.branch >>]
+              - matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
       - linting:
           context: Web
           requires:
