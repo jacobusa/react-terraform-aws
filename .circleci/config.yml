@@ -265,13 +265,13 @@ workflows:
   #           tags:
   #             ignore: /^v.*/
   build_and_deploy:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
     jobs:
       - setup:
           context: Web
-          when:
-            and:
-              - equal: [main, << pipeline.git.branch >>]
-              - matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
       - linting:
           context: Web
           requires:
