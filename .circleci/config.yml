@@ -96,8 +96,9 @@ jobs:
           command: |
             export HEY=hye
             CURRENT_VERSION=$(jq -r '.version' package.json)
-            IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
+            IFS='.' read -r -a VERSION_PARTS
       - *build-project-dev
+        # IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
         # PATCH_VERSION=${VERSION_PARTS[2]}
         # echo "$PATCH_VERSION"
         # NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
