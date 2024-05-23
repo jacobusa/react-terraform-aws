@@ -74,6 +74,17 @@ jobs:
       - run:
           name: Run Linting
           command: yarn lint
+  bump-version:
+    executor: app-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Bump Version and commit
+          command: |
+            echo "bumping version"
+      # - *build-project-dev
   build:
     executor: app-executor
     steps:
@@ -237,10 +248,14 @@ workflows:
           context: Web
           requires:
             - setup
-      - build:
+      - bump-version:
           context: Web
           requires:
             - linting
+      - build:
+          context: Web
+          requires:
+            - bump-version
       # - terraform-validate:
       #     context: Web
       #     name: terraform-validate-dev
