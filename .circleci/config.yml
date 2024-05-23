@@ -264,11 +264,7 @@ workflows:
     jobs:
       - bump-version:
           context: Web
-          filters:
-            branches:
-              only: main
-            tags:
-              ignore: /^v.*/
+
   build_and_deploy:
     when:
       and:
