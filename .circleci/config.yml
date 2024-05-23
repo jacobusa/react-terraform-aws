@@ -86,7 +86,7 @@ jobs:
             git config --global user.email "ci@ribbiot.com"
             git config --global user.name "CircleCI"
             npm version --patch
-            git push https://${GITHU_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main
+            git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main
             export CURRENT_VERSION=$(jq -r '.version' package.json)
             echo $CURRENT_VERSION
       # git push origin main
