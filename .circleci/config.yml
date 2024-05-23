@@ -84,20 +84,9 @@ jobs:
           name: Bump Version and commit
           command: |
             echo "bumping version"
-      # - *build-project-dev
-  build:
-    executor: app-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Initiallze env var
-          command: |
-            export HEY=hye
             CURRENT_VERSION=$(jq -r '.version' package.json)
-            IFS='.' read -r -a VERSION_PARTS
-      - *build-project-dev
+            wcho "$CURRENT_VERSION"
+        # CURRENT_VERSION=$(jq -r '.version' package.json)
         # IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
         # PATCH_VERSION=${VERSION_PARTS[2]}
         # echo "$PATCH_VERSION"
@@ -105,6 +94,14 @@ jobs:
         # echo "$NEW_PATCH_VERSION"
         # NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$NEW_PATCH_VERSION"
         # jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
+      # - *build-project-dev
+  build:
+    executor: app-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - *build-project-dev
   terraform-validate:
     parameters:
       env:
@@ -251,16 +248,16 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - setup:
-          context: Web
-      - linting:
-          context: Web
-          requires:
-            - setup
+      # - setup:
+      #     context: Web
+      # - linting:
+      #     context: Web
+      #     requires:
+      #       - setup
       - bump-version:
           context: Web
-          requires:
-            - linting
+          # requires:
+          #   - linting
       - build:
           context: Web
           requires:
