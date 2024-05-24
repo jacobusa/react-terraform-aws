@@ -273,31 +273,31 @@ jobs:
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
             fi
 workflows:
-  bump-version-on-main:
-    when:
-      not:
-        matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
-      # and:
-      #   - equal: [main, << pipeline.git.branch >>]
-      #   - not: << pipeline.git.tag >>
-    jobs:
-      - bump-version:
-          context: Web
-          filters:
-            branches:
-              only:
-                - main
+  # bump-version-on-main:
+  #   when:
+  #     not:
+  #       matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+  #   jobs:
+  #     - bump-version:
+  #         context: Web
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  # and:
+  #   - equal: [main, << pipeline.git.branch >>]
+  #   - not: << pipeline.git.tag >>
 
-    # when:
-    #   and:
-    #     - equal: [main, << pipeline.git.branch >>]
-    #     - not:
-    #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+  # when:
+  #   and:
+  #     - equal: [main, << pipeline.git.branch >>]
+  #     - not:
+  #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
 
-    # and:
-    #   - not:
-    #       matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
-    #   - equal: [main, << pipeline.git.branch >>]
+  # and:
+  #   - not:
+  #       matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+  #   - equal: [main, << pipeline.git.branch >>]
 
   build_and_deploy:
     when:
