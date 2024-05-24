@@ -277,9 +277,9 @@ jobs:
             fi
 workflows:
   bump-version-on-main:
-    when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
+    # when:
+    #   and:
+    #     - equal: [main, << pipeline.git.branch >>]
     jobs:
       - bump-version:
           context: Web
