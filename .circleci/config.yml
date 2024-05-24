@@ -95,7 +95,7 @@ jobs:
               exit 0
             else
               echo "Tagged commit found. Skipping job."
-              exit 1
+              exit 0
             fi
       # git push origin main
       # CURRENT_VERSION=$(jq -r '.version' package.json)
