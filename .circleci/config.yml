@@ -83,14 +83,20 @@ jobs:
       - run:
           name: Bump Version and commit
           command: |
-            git config --global user.email "ci@ribbiot.com"
-            git config --global user.name "CircleCI"
-            yarn config set version-git-message "Upgrade to version %s"
-            git config --global push.followTags true
-            yarn version --patch
-            git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
-            export CURRENT_VERSION=$(jq -r '.version' package.json)
-            echo $CURRENT_VERSION
+            if [ -z "$(git tag --points-at HEAD)" ]; then
+              git config --global user.email "ci@ribbiot.com"
+              git config --global user.name "CircleCI"
+              yarn config set version-git-message "Upgrade to version %s"
+              git config --global push.followTags true
+              yarn version --patch
+              git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
+              export CURRENT_VERSION=$(jq -r '.version' package.json)
+              echo $CURRENT_VERSION
+              exit 0
+            else
+              echo "Tagged commit found. Skipping job."
+              exit 1
+            fi
       # git push origin main
       # CURRENT_VERSION=$(jq -r '.version' package.json)
       # IFS='.' read -r -a VERSION_PARTS \<<< "0.0.1"
@@ -258,16 +264,16 @@ jobs:
             fi
 workflows:
   bump-version-on-main:
-    when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
-        - not:
-            matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+    # when:
+    #   and:
+    #     - equal: [main, << pipeline.git.branch >>]
+    #     - not:
+    #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
 
-      # and:
-      #   - not:
-      #       matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
-      #   - equal: [main, << pipeline.git.branch >>]
+    # and:
+    #   - not:
+    #       matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+    #   - equal: [main, << pipeline.git.branch >>]
     jobs:
       - bump-version:
           context: Web
@@ -275,8 +281,6 @@ workflows:
             branches:
               only:
                 - main
-            tags:
-              ignore: /.*/
 
   build_and_deploy:
     when:
