@@ -275,9 +275,11 @@ jobs:
 workflows:
   bump-version-on-main:
     when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
-        - not: << pipeline.git.tag >>
+      not:
+        matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+      # and:
+      #   - equal: [main, << pipeline.git.branch >>]
+      #   - not: << pipeline.git.tag >>
     jobs:
       - bump-version:
           context: Web
