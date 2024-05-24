@@ -290,7 +290,7 @@ workflows:
           context: Web
           filters:
             tags:
-              only: /^v.*/
+              ignore: /.*/
             branches:
               only: main
   # bump-version-on-main:
@@ -327,6 +327,11 @@ workflows:
     jobs:
       - setup:
           context: Web
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - linting:
           context: Web
           requires:
