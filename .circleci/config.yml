@@ -83,8 +83,13 @@ jobs:
       - run:
           name: Bump Version and commit
           command: |
-            echo "<< pipeline.git.branch >>"
-            echo $CIRCLE_TAG
+            if [ "$CIRCLE_BRANCH" == "main" ]; then
+              echo "On main branch. Running the code."
+              # Place your code here
+              # For example, running tests
+            else
+              echo "Not on main branch. Skipping the run."
+            fi
 
       # git config --global user.email "ci@ribbiot.com"
       # git config --global user.name "CircleCI"
