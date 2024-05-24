@@ -84,7 +84,7 @@ jobs:
           name: Bump Version and commit
           command: |
             echo "<< pipeline.git.branch >>"
-            echo "${CIRCLE_TAG}"
+            echo $CIRCLE_TAG
 
       # git config --global user.email "ci@ribbiot.com"
       # git config --global user.name "CircleCI"
