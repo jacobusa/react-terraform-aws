@@ -83,13 +83,14 @@ jobs:
       - run:
           name: Bump Version and commit
           command: |
-            if [ "$CIRCLE_BRANCH" == "main" ]; then
-              echo "On main branch. Running the code."
-              # Place your code here
-              # For example, running tests
-            else
-              echo "Not on main branch. Skipping the run."
-            fi
+            echo "On main branch. Bumping version."
+            git config --global user.email "ci@ribbiot.com"
+            git config --global user.name "CircleCI"
+            yarn config set version-git-message "Upgrade to version %s"
+            git config --global push.followTags true
+            yarn version --patch
+            git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
+            export CURRENT_VERSION=$(jq -r '.version' package.json)
 
       # git config --global user.email "ci@ribbiot.com"
       # git config --global user.name "CircleCI"
@@ -320,10 +321,10 @@ workflows:
   #   - equal: [main, << pipeline.git.branch >>]
 
   build_and_deploy:
-    when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
-        - matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+    # when:
+    #   and:
+    #     - equal: [main, << pipeline.git.branch >>]
+    #     - matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
     jobs:
       - setup:
           context: Web
