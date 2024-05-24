@@ -292,7 +292,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: /.*/
+              only: main
   # bump-version-on-main:
   #   when:
   #     not:
