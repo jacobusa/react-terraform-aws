@@ -285,7 +285,7 @@ workflows:
           context: Web
           filters:
             tags:
-              only: /^heyyyyyyyyy.*/
+              only: /^v.*/
             branches:
               ignore: /.*/
   # bump-version-on-main:
