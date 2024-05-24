@@ -86,7 +86,7 @@ jobs:
             echo "On main branch. Bumping version."
             git config --global user.email "ci@ribbiot.com"
             git config --global user.name "CircleCI"
-            yarn config set version-git-message "Upgrade to version %s"
+            yarn config set version-git-message "[skip ci] Upgrade to version %s"
             git config --global push.followTags true
             yarn version --patch
             git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
@@ -282,18 +282,15 @@ jobs:
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
             fi
 workflows:
-  bump-version-on-main:
-    # when:
-    #   and:
-    #     - equal: [main, << pipeline.git.branch >>]
-    jobs:
-      - bump-version:
-          context: Web
-          filters:
-            branches:
-              only: main
-            tags:
-              ignore: /.*/
+  # bump-version-on-main:
+  #   jobs:
+  #     - bump-version:
+  #         context: Web
+  #         filters:
+  #           branches:
+  #             only: main
+  #           tags:
+  #             ignore: /.*/
   # bump-version-on-main:
   #   when:
   #     not:
@@ -324,19 +321,24 @@ workflows:
   #   and:
   #     - equal: [main, << pipeline.git.branch >>]
   #     - matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
-  # build_and_deploy:
-  #   jobs:
-  #     - setup:
-  #         context: Web
-  #         filters:
-  #           tags:
-  #             only: /^v.*/
-  #           branches:
-  #             ignore: /.*/
-  #     - linting:
-  #         context: Web
-  #         requires:
-  #           - setup
+  build_and_deploy:
+    jobs:
+      - bump-version:
+          context: Web
+          filters:
+            branches:
+              only: main
+      - setup:
+          context: Web
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - linting:
+          context: Web
+          requires:
+            - setup
   # - bump-version:
   #     context: Web
   # requires:
