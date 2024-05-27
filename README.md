@@ -14,4 +14,3 @@ Production grade configuration of automation deployment of a react app to AWS us
   - Deployment to AWS S3 and cloudfront with cache invalidations
   - One click deploy to prod
   - main branch versioning with patch, ninor, and major
-    asdf
