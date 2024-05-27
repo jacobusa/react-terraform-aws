@@ -292,19 +292,19 @@ workflows:
   #           tags:
   #             ignore: /.*/
   bump-version-on-main:
-    when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
-        - not:
-            matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+    # when:
+    #   and:
+    #     - equal: [main, << pipeline.git.branch >>]
+    #     - not:
+    #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
     jobs:
       - bump-version:
           context: Web
-          # filters:
-          #   branches:
-          #     only: main
-          #   tags:
-          #     ignore: /.*/
+          filters:
+            branches:
+              only: main
+            tags:
+              ignore: /.*/
   # and:
   #   - equal: [main, << pipeline.git.branch >>]
   #   - not: << pipeline.git.tag >>
@@ -348,8 +348,8 @@ workflows:
               ignore: /.*/
       - linting:
           context: Web
-          # requires:
-          #   - setup
+          requires:
+            - setup
   # - bump-version:
   #     context: Web
   # requires:
