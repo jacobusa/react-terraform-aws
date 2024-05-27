@@ -47,8 +47,7 @@ aliases:
       command: |
         echo "credentials \"app.terraform.io\" {token =
         \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
-  - &main-branch-tag-filters
-    filters:
+  - filters: &main-branch-tag-filters
       tags:
         only: /^v.*/
       branches:
