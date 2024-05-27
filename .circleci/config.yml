@@ -346,8 +346,8 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-            # branches:
-            #   ignore: /.*/
+            branches:
+              ignore: /.*/
       - linting:
           context: Web
           requires:
