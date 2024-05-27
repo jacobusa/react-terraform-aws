@@ -350,6 +350,11 @@ workflows:
           context: Web
           requires:
             - setup
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
   # - bump-version:
   #     context: Web
   # requires:
