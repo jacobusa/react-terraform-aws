@@ -350,10 +350,10 @@ workflows:
       #         ignore: /.*/
       - setup:
           context: Web
-          filters: *main-branch-tag-filters
+          # filters: *main-branch-tag-filters
       - linting:
           context: Web
-          filters: *main-branch-tag-filters
+          # filters: *main-branch-tag-filters
           requires:
             - setup
           # filters:
@@ -363,19 +363,16 @@ workflows:
           #     ignore: /.*/
       - build:
           context: Web
-          filters: *main-branch-tag-filters
+          # filters: *main-branch-tag-filters
           requires:
             - linting
-  # - terraform-validate:
-  #     context: Web
-  #     name: terraform-validate-dev
-  #     requires:
-  #       - build
-  #     env: dev
-  #     filters:
-  #       branches:
-  #         only:
-  #           - main
+      - build:
+          context: Web
+          name: build-dev
+          requires:
+            - build
+          env: dev
+          filters: *main-branch-tag-filters
   # - terraform-plan-and-apply:
   #     context: Web
   #     name: terraform-plan-and-apply-dev
