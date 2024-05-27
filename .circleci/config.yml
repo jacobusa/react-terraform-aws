@@ -324,7 +324,7 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - matches: { pattern: /^*/, value: << pipeline.git.tag >> }
+        - matches: { pattern: /^v*/, value: << pipeline.git.tag >> }
     # when:
     #   and:
     #     - equal: [main, << pipeline.git.branch >>]
