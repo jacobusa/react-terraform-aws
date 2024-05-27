@@ -324,8 +324,7 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - and:
-            - matches: { pattern: /^v*/, value: << pipeline.git.tag >> }
+        - matches: { pattern: /^v*/, value: << pipeline.git.tag >> }
 
     # when:
     #   and:
@@ -344,11 +343,11 @@ workflows:
           context: Web
           # requires:
           #   - bump-version
-          # filters:
-          #   tags:
-          #     only: /^v.*/
-          #   branches:
-          #     ignore: /.*/
+          filters:
+            tags:
+              only: /^v.*/
+            # branches:
+            #   ignore: /.*/
       - linting:
           context: Web
           requires:
