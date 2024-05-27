@@ -329,15 +329,17 @@ workflows:
           filters:
             branches:
               only: main
+            tags:
+              ignore: /.*/
       - setup:
           context: Web
-          requires:
-            - bump-version
-          # filters:
-          #   tags:
-          #     only: /^v.*/
-          #   branches:
-          #     ignore: /.*/
+          # requires:
+          #   - bump-version
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - linting:
           context: Web
           requires:
