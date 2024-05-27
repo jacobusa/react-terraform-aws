@@ -56,7 +56,7 @@ aliases:
 
   - filters: &pr-branch-filters
       tags:
-        ignore: /.*/
+        ignore: /^v.*/
       branches:
         ignore: main
 
