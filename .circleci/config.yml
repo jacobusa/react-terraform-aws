@@ -47,11 +47,18 @@ aliases:
       command: |
         echo "credentials \"app.terraform.io\" {token =
         \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
-  - filters: &main-branch-tag-filters
+
+  - filters: &tag-only-filters
       tags:
         only: /^v.*/
       branches:
         ignore: /.*/
+
+  - filters: &pr-branch-filters
+      tags:
+        ignore: /.*/
+      branches:
+        ignore: main
 
 orbs:
   aws-cli: circleci/aws-cli@3.1
@@ -291,21 +298,7 @@ jobs:
               aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
             fi
 workflows:
-  # bump-version-on-main:
-  #   jobs:
-  #     - bump-version:
-  #         context: Web
-  #         filters:
-  #           branches:
-  #             only: main
-  #           tags:
-  #             ignore: /.*/
   bump-version-on-main:
-    # when:
-    #   and:
-    #     - equal: [main, << pipeline.git.branch >>]
-    #     - not:
-    #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
     jobs:
       - bump-version:
           context: Web
@@ -314,64 +307,38 @@ workflows:
               only: main
             tags:
               ignore: /.*/
-  # and:
-  #   - equal: [main, << pipeline.git.branch >>]
-  #   - not: << pipeline.git.tag >>
 
-  # when:
-  #   and:
-  #     - equal: [main, << pipeline.git.branch >>]
-  #     - not:
-  #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
-
-  # and:
-  #   - not:
-  #       matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
-  #   - equal: [main, << pipeline.git.branch >>]
-
-  build_and_deploy:
-    # when:
-    #   and:
-    #     - equal: [main, << pipeline.git.branch >>]
-    #     - matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
-
-    # when:
-    #   and:
-    #     - equal: [main, << pipeline.git.branch >>]
-    #     - not:
-    #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+  build_and_test_pr:
     jobs:
-      # - bump-version:
-      #     context: Web
-      #     filters:
-      #       branches:
-      #         only: main
-      #       tags:
-      #         ignore: /.*/
       - setup:
           context: Web
-          # filters: *main-branch-tag-filters
+          filters: *pr-branch-filters
       - linting:
           context: Web
-          # filters: *main-branch-tag-filters
+          filters: *pr-branch-filters
           requires:
             - setup
-          # filters:
-          #   tags:
-          #     only: /^v.*/
-          #   branches:
-          #     ignore: /.*/
       - build:
           context: Web
-          # filters: *main-branch-tag-filters
+          filters: *pr-branch-filters
           requires:
             - linting
+
+  build_and_deploy:
+    jobs:
+      - setup:
+          context: Web
+          filters: *tag-only-filters
+      - linting:
+          context: Web
+          filters: *tag-only-filters
+          requires:
+            - setup
       - build:
           context: Web
-          name: build-dev
+          filters: *tag-only-filters
           requires:
-            - build
-          filters: *main-branch-tag-filters
+            - linting
   # - terraform-plan-and-apply:
   #     context: Web
   #     name: terraform-plan-and-apply-dev
