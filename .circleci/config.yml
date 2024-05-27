@@ -361,14 +361,11 @@ workflows:
           #     only: /^v.*/
           #   branches:
           #     ignore: /.*/
-  # - bump-version:
-  #     context: Web
-  # requires:
-  #   - linting
-  # - build:
-  #     context: Web
-  #     requires:
-  #       - bump-version
+      - build:
+          context: Web
+          filters: *main-branch-tag-filters
+          requires:
+            - linting
   # - terraform-validate:
   #     context: Web
   #     name: terraform-validate-dev
