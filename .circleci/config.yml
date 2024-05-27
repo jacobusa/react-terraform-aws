@@ -47,6 +47,12 @@ aliases:
       command: |
         echo "credentials \"app.terraform.io\" {token =
         \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
+  - &main-branch-tag-filters
+    filters:
+      tags:
+        only: /^v.*/
+      branches:
+        ignore: /.*/
 orbs:
   aws-cli: circleci/aws-cli@3.1
 jobs:
@@ -341,20 +347,17 @@ workflows:
       #         ignore: /.*/
       - setup:
           context: Web
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+          filters: *main-branch-tag-filters
       - linting:
           context: Web
           requires:
             - setup
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+          filters: *main-branch-tag-filters
+          # filters:
+          #   tags:
+          #     only: /^v.*/
+          #   branches:
+          #     ignore: /.*/
   # - bump-version:
   #     context: Web
   # requires:
