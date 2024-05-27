@@ -371,7 +371,6 @@ workflows:
           name: build-dev
           requires:
             - build
-          env: dev
           filters: *main-branch-tag-filters
   # - terraform-plan-and-apply:
   #     context: Web
