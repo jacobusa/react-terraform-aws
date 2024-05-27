@@ -105,10 +105,17 @@ jobs:
             git config --global user.name "CircleCI"
             yarn config set version-git-message "[skip ci] Upgrade to version %s"
             git config --global push.followTags true
-            export GIT_COMMIT_MESSAGE=$(git log --format=oneline -n 1 $CIRCLE_SHA1)
-            echo $GIT_COMMIT_MESSAGE
-            yarn version --patch
-            git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
+            export COMMIT_MESSAGE=$(git log --format=oneline -n 1 $CIRCLE_SHA1)
+            if echo "$COMMIT_MESSAGE" | grep -q "\[minor\]"; then
+              yarn version --minor
+              git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
+            elif echo "$COMMIT_MESSAGE" | grep -q "\[major\]"; then
+              yarn version --major
+              git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
+            else
+              yarn version --patch
+              git push https://${GITHUB_ACCESS_TOKEN}@github.com/jacobusa/react-terraform-aws.git main --follow-tags
+            fi
 
       # export CURRENT_VERSION=$(jq -r '.version' package.json)
       # git config --global user.email "ci@ribbiot.com"
