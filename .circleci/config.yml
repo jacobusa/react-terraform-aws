@@ -52,6 +52,7 @@ aliases:
         only: /^v.*/
       branches:
         ignore: /.*/
+
 orbs:
   aws-cli: circleci/aws-cli@3.1
 jobs:
@@ -79,6 +80,9 @@ jobs:
       - run:
           name: Run Linting
           command: yarn lint
+      - run: |
+          CURRENT_VERSION=$(jq -r '.version' package.json)
+          echo "Current version: $CURRENT_VERSION"
   bump-version:
     executor: app-executor
     steps:
@@ -349,9 +353,9 @@ workflows:
           filters: *main-branch-tag-filters
       - linting:
           context: Web
+          filters: *main-branch-tag-filters
           requires:
             - setup
-          filters: *main-branch-tag-filters
           # filters:
           #   tags:
           #     only: /^v.*/
