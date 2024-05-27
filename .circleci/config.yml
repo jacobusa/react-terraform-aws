@@ -318,11 +318,11 @@ workflows:
   #   - equal: [main, << pipeline.git.branch >>]
 
   build_and_deploy:
-    when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
-        - not:
-            matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
+    # when:
+    #   and:
+    #     - equal: [main, << pipeline.git.branch >>]
+    #     - not:
+    #         matches: { pattern: /^v.*/, value: << pipeline.git.tag >> }
     jobs:
       - bump-version:
           context: Web
@@ -331,11 +331,13 @@ workflows:
               only: main
       - setup:
           context: Web
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+          requires:
+            - bump-version
+          # filters:
+          #   tags:
+          #     only: /^v.*/
+          #   branches:
+          #     ignore: /.*/
       - linting:
           context: Web
           requires:
