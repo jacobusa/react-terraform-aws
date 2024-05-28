@@ -329,12 +329,12 @@ workflows:
           filters: *pr-branch-filters
       - linting:
           context: Web
-          filters: *pr-branch-filters
+          # filters: *pr-branch-filters
           requires:
             - setup
       - build:
           context: Web
-          filters: *pr-branch-filters
+          # filters: *pr-branch-filters
           requires:
             - linting
 
@@ -345,12 +345,12 @@ workflows:
           filters: *tag-only-filters
       - linting:
           context: Web
-          filters: *tag-only-filters
+          # filters: *tag-only-filters
           requires:
             - setup
       - build:
           context: Web
-          filters: *tag-only-filters
+          # filters: *tag-only-filters
           requires:
             - linting
   # - terraform-plan-and-apply:
