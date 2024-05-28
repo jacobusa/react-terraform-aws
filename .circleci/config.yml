@@ -29,9 +29,10 @@ aliases:
       name: Build Project
       command: |
         yarn install
-        export HEY=$(cat artifacts/hey.txt)
-        printenv
-        echo $HEY
+        CURRENT_VERSION=$(jq -r '.version' package.json)
+        echo \VITE_VERSION=$CURRENT_VERSION >> .env.dev 
+        cat .env.dev
+        VITE_ENV="dev"
         yarn build:dev
         echo "Build Successful!"
   - &build-project-prod
@@ -39,6 +40,8 @@ aliases:
       name: Build Project Production
       command: |
         yarn install
+        CURRENT_VERSION=$(jq -r '.version' package.json)
+        echo \VITE_VERSION=$CURRENT_VERSION >> .env.production 
         yarn build:prod
         echo "Build Successful!"
   - &configure-terraform-cloud
@@ -164,6 +167,7 @@ jobs:
       - attach_workspace:
           at: ./
       - *build-project-dev
+
   terraform-validate:
     parameters:
       env:
