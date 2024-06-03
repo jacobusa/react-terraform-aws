@@ -31,8 +31,6 @@ aliases:
         yarn install
         CURRENT_VERSION=$(jq -r '.version' package.json)
         echo \VITE_VERSION=$CURRENT_VERSION >> .env.dev 
-        cat .env.dev
-        VITE_ENV="dev"
         yarn build:dev
         echo "Build Successful!"
   - &build-project-prod
