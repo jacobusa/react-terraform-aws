@@ -254,10 +254,7 @@ jobs:
           command: |
             AWS_BUCKET_NAME=$(cat artifacts/dev_bucket_id.txt | sed 's/\"//g')
             echo $AWS_BUCKET_NAME
-            if [ "${CIRCLE_BRANCH}" == "main" ]
-            then 
-              aws --region ${AWS_REGION} s3 sync ~/repo/dist s3://${AWS_BUCKET_NAME} --delete
-            fi
+            aws --region ${AWS_REGION} s3 sync ~/repo/dist s3://${AWS_BUCKET_NAME} --delete
   deploy-to-aws-cloudfront-dev:
     executor: app-executor
     steps:
@@ -272,10 +269,7 @@ jobs:
             AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/dev_cloudfront_dist_id.txt | sed 's/\"//g')
             echo $AWS_CLOUDFRONT_DISTRIBUTION_ID
             aws configure set preview.cloudfront true
-            if [ "${CIRCLE_BRANCH}" == "main" ]
-            then 
-              aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
-            fi
+            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
   deploy-to-aws-s3-prod:
     executor: app-executor
     steps:
@@ -289,10 +283,7 @@ jobs:
           command: |
             AWS_BUCKET_NAME=$(cat artifacts/prod_bucket_id.txt | sed 's/\"//g')
             echo $AWS_BUCKET_NAME
-            if [ "${CIRCLE_BRANCH}" == "main" ]
-            then 
-              aws --region ${AWS_REGION} s3 sync ~/repo/dist s3://${AWS_BUCKET_NAME} --delete
-            fi
+            aws --region ${AWS_REGION} s3 sync ~/repo/dist s3://${AWS_BUCKET_NAME} --delete
   deploy-to-aws-cloudfront-prod:
     executor: app-executor
     steps:
@@ -307,10 +298,7 @@ jobs:
             AWS_CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/prod_cloudfront_dist_id.txt | sed 's/\"//g')
             echo $AWS_CLOUDFRONT_DISTRIBUTION_ID
             aws configure set preview.cloudfront true
-            if [ "${CIRCLE_BRANCH}" == "main" ]
-            then 
-              aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
-            fi
+            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --path /\*
 workflows:
   bump-version-on-main:
     jobs:
