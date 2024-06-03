@@ -329,12 +329,12 @@ workflows:
           filters: *pr-branch-filters
       - linting:
           context: Web
-          # filters: *pr-branch-filters
+          filters: *pr-branch-filters
           requires:
             - setup
       - build:
           context: Web
-          # filters: *pr-branch-filters
+          filters: *pr-branch-filters
           requires:
             - linting
 
@@ -345,41 +345,31 @@ workflows:
           filters: *tag-only-filters
       - linting:
           context: Web
-          # filters: *tag-only-filters
+          filters: *tag-only-filters
           requires:
             - setup
       - build:
           context: Web
-          # filters: *tag-only-filters
+          filters: *tag-only-filters
           requires:
             - linting
-
-  # - terraform-plan-and-apply:
-  #     context: Web
-  #     name: terraform-plan-and-apply-dev
-  #     requires:
-  #       - terraform-validate-dev
-  #     env: dev
-  #     filters:
-  #       branches:
-  #         only:
-  #           - main
-  # - deploy-to-aws-s3-dev:
-  #     context: Web
-  #     requires:
-  #       - terraform-plan-and-apply-dev
-  #     filters:
-  #       branches:
-  #         only:
-  #           - main
-  # - deploy-to-aws-cloudfront-dev:
-  #     context: Web
-  #     requires:
-  #       - deploy-to-aws-s3-dev
-  #     filters:
-  #       branches:
-  #         only:
-  #           - main
+      - terraform-plan-and-apply:
+          context: Web
+          name: terraform-plan-and-apply-dev
+          requires:
+            - build
+          env: dev
+          filters: *tag-only-filters
+      - deploy-to-aws-s3-dev:
+          context: Web
+          requires:
+            - terraform-plan-and-apply-dev
+          filters: *tag-only-filters
+      - deploy-to-aws-cloudfront-dev:
+          context: Web
+          requires:
+            - deploy-to-aws-s3-dev
+          filters: *tag-only-filters
   # - terraform-destroy:
   #     context: Web
   #     name: terraform-destroy-dev
