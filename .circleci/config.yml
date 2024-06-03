@@ -30,7 +30,8 @@ aliases:
       command: |
         yarn install
         CURRENT_VERSION=$(jq -r '.version' package.json)
-        echo \VITE_VERSION="$CURRENT_VERSION" >> .env.dev 
+        echo \ >> .env.dev
+        echo VITE_VERSION="$CURRENT_VERSION" >> .env.dev 
         yarn build:dev
         echo "Build Successful!"
   - &build-project-prod
@@ -39,7 +40,8 @@ aliases:
       command: |
         yarn install
         CURRENT_VERSION=$(jq -r '.version' package.json)
-        echo \VITE_VERSION=$CURRENT_VERSION >> .env.production 
+        echo \ >> .env.production
+        echo VITE_VERSION=$CURRENT_VERSION >> .env.production 
         yarn build:prod
         echo "Build Successful!"
   - &configure-terraform-cloud
